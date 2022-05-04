@@ -1,0 +1,89 @@
+.main {
+    margin: 0 auto;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.card_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    flex: 1;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: var(--border);
+    margin: 10px;
+    background-color: #eee;
+    flex-basis: auto;
+    max-width: 250px;
+    min-height: 250px;
+    flex-grow: inherit;
+}
+
+.card:hover {
+    border: var(--border-hover);
+    margin: 10px;
+    background-color: #eee;
+    box-shadow: var(--box-shadow);
+}
+
+.card:hover .card_content {
+    background-color: var(--green_main);
+}
+
+.card_img {
+    padding: 2rem 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.card_img img {
+    width: 160px;
+}
+
+.card_content {
+    padding: 0 2rem;
+    align-items: center;
+    background-color: var(--dark-color);
+    color: var(--black);
+}
+
+.card_content h3 {
+    text-align: center;
+    font-size: large;
+    color: white;
+}
+
+.card_content .content_inline {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.card_content .sale_price {
+    font-weight: bold;
+    font-size: large;
+}
+
+.card_content .sale_price:after {
+    content: ' ₸';
+    font-weight: bold;
+    font-size: large;
+}
+
+.card_content .price {
+    font-weight: normal;
+    font-size: small;
+    text-decoration: line-through;
+}
+
+.card_content .price:after {
+    content: ' ₸';
+}

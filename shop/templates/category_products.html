@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% load custom_tags %}
+<!-- arrivals section starts  -->
+
+{% block title %}
+    {{ category_name }}
+{% endblock %}
+
+{% block content %}
+
+    {% include 'header.html' %}
+    <link rel="stylesheet" href="{% static 'shop/css/category_style.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/bootstrap/bootstrap.min.css' %}">
+    <style>
+        a:hover {
+            text-decoration: none;
+        }
+
+        body {
+            font-size: 15px;
+        }
+
+        .sorting-form {
+            width: 100%;
+            padding: 2rem;
+            background-color: var(--dark-color);
+            color: #fff;
+            justify-content: space-between;
+            border: var(--border);
+        }
+
+        .sorting-form:hover {
+            box-shadow: var(--box-shadow);
+        }
+
+        .main {
+            margin-bottom: 3rem;
+        }
+    </style>
+    <section class="arrivals" id="arrivals">
+        <h1 class="heading"><span>{{ category_name }}</span></h1>
+        <div class="main">
+            <form method="get" class="form-inline sorting-form">
+                {{ filter.form.as_p }}
+                <button type="submit" class="btn btn-primary">Применить</button>
+            </form>
+            <div class="card_wrapper">
+                {% for product in product_page_obj %}
+                    <a class="card" href="{% url 'product_detail' product.product.slug %}">
+                        <div class="card_img">
+                            <img src="{{ product.image.url }}">
+                        </div>
+                        <div class="card_content">
+                            <h3>{{ product.product.title }} {{ product.product.brand }} <br> {{ product.color.name }}
+                            </h3>
+                            <h3>{{ product.type }}</h3>
+                            <div class="content_inline">
+                                <span class="sale_price">{{ product.sale_price|floatformat:"0"|intcomma:' ' }}</span>
+                                {#                                <span class="price">{{ product.id|get_first_price|floatformat:"0"|intcomma:' ' }}</span>#}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            <div>
+                {% if product_page_obj.has_previous %}
+                    <a class="btn btn-outline-info mb-4"
+                       href="{% relative_url 1 'page' request.GET.urlencode %}">Первая</a>
+                    <a class="btn btn-outline-info mb-4"
+                       href="{% relative_url product_page_obj.previous_page_number 'page' request.GET.urlencode %}">Предыдущая</a>
+                {% endif %}
+
+                {% for num in product_page_obj.paginator.page_range %}
+                    {% if product_page_obj.number == num %}
+                        <a class="btn btn-info mb-4"
+                           href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                    {% elif num > product_page_obj.number|add:"-3" and num < product_page_obj.number|add:"3" %}
+                        <a class="btn btn-outline-info mb-4"
+                           href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if product_page_obj.has_next %}
+                    <a class="btn btn-outline-info mb-4"
+                       href="{% relative_url product_page_obj.next_page_number 'page' request.GET.urlencode %}">Следующая</a>
+                    <a class="btn btn-outline-info mb-4"
+                       href="{% relative_url product_page_obj.paginator.num_pages 'page' request.GET.urlencode %}">Последняя</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+<!-- arrivals section ends -->

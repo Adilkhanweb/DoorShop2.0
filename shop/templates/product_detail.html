@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_tags %}
+{% load humanize %}
+{% block title %}
+    {{ product.title|title }} {{ product.variant }}
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'shop/vendors/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/themify-icons/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/linericon/style.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/nice-select/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/owl-carousel/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/owl-carousel/owl.carousel.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'shop/css/swiper.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/vendors/style.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/product_details.css' %}">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+    {% include 'header.html' %}
+    <!--================Single Product Area =================-->
+    <div class="product_image_area">
+        <div class="container">
+            <div class="row s_product_inner">
+                <div class="col-lg-6">
+                    <div>
+                        <div class="single-prd-item target">
+                            <img style="object-fit: contain; max-height: 500px;"
+                                 src="{{ variants.first.image.url }}" alt="">
+                        </div>
+                        {% if related_images %}
+                            {% if  related_images.count > 4 %}
+                                <div class="slider-container" style="margin-top: 1rem;">
+                                    <div class="swiper-container">
+                                        <div class="swiper-wrapper" id="related_images">
+                                            {% for image in related_images %}
+                                                <div class="swiper-slide"
+                                                     style="object-fit: contain; height: 20vh; border: var(--border)">
+                                                    <img src="{{ image.image.url }}" alt=""
+                                                         style="object-fit: contain; height: 20vh;">
+                                                </div>
+                                            {% endfor %}
+                                            <strong></strong>
+                                        </div>
+                                        {#                                    <div class="swiper-pagination"></div>#}
+                                        <button class="swiper-button-prev"></button>
+                                        <button class="swiper-button-next"></button>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="hover-container" style="justify-content: left; margin-top: 1rem"
+                                     id="related_images">
+                                    {% for image in related_images %}
+                                        <div>
+                                            <img src="{{ image.image.url }}" alt="{{ image.product.title }}">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {#                        {% if related_images %}#}
+                        {#                            <div class="hover-container" style="justify-content: center; margin-top: 1rem"#}
+                        {#                                 id="related_images">#}
+                        {#                                {% for related_image in related_images %}#}
+                        {#                                    <div>#}
+                        {#                                        <img src="{{ related_image.image.url }}" alt="">#}
+                        {#                                    </div>#}
+                        {#                                {% endfor %}#}
+                        {#                            </div>#}
+                        {#                        {% endif %}#}
+
+                    </div>
+                </div>
+                <div class="col-lg-5 offset-lg-1">
+                    <div class="s_product_text">
+                        <h3>{{ product.title }} {{ product.brand }}</h3>
+                        <div style="display: flex; justify-content: flex-start;align-items: start">
+                            <h2 id="new_price" class="product-price"
+                                style="margin-right: 3rem;">{{ variants.first.sale_price|floatformat:"0"|intcomma:' ' }}</h2>
+                            {#                            <span style="text-decoration: line-through"#}
+                            {#                                  id="old_price"#}
+                            {#                                  class="product-price">{{ variants.first.price|floatformat:"0"|intcomma:' ' }}</span>#}
+                        </div>
+                        {#                        {% if variants.first.sale_percent %}#}
+                        {#                            <h2 id="sale_percent" style="font-size: medium;"><i>Скидка {{ variants.first.sale_percent }}%</i>#}
+                        {#                            </h2>#}
+                        {#                        {% endif %}#}
+                        <ul class="list">
+                            {#                            <li><a class="active"#}
+                            {#                                   href="{% url 'category' product.category.slug %}"><span>Категория :</span> {{ product.category }}#}
+                            {#                            </a></li>#}
+                            <li>Цвет: <span id="color-container">{{ variants.first.color.name }}</span></li>
+                            {% if variants.first.type %}
+                                <li>Тип двери: <span id="type-container">{{ variants.first.type }}</span></li>
+                            {% endif %}
+                            <li><span>Виды: </span>
+                                <div class="hover-container" style="justify-content: left; margin-top: 1rem"
+                                     id="variant_images">
+                                    {% for variant in variants %}
+                                        {% if variant.image %}
+                                            <div data-price="{{ variant.price|floatformat:"0"|intcomma:' ' }}"
+                                                 data-color="{{ variant.color.name }}"
+                                                 data-sale_price="{{ variant.sale_price|floatformat:"0"|intcomma:' ' }}"
+                                                 data-type="{{ variant.type }}">
+                                                <img src="{{ variant.image.url }}"></div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </li>
+                            <li>
+                                <span>Бренд: </span>
+                                <div style="max-width: 120px;">
+                                    {#                                    <h4>{{ product.brand.name }}</h4>#}
+                                    <img src="{{ product.brand.logo.url }}" alt="" style="object-fit: contain;">
+                                </div>
+                            </li>
+                            <li>{{ product.services.services|safe }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--================End Single Product Area =================-->
+
+    <!--================Product Description Area =================-->
+    <section class="product_description_area">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link " id="home-tab" data-toggle="tab" href="#home" role="tab"
+                   aria-controls="home"
+                   aria-selected="true">Описание</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                   aria-controls="profile"
+                   aria-selected="false">Спецификации</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active show" id="review-tab" data-toggle="tab" href="#review" role="tab"
+                   aria-controls="review"
+                   aria-selected="false">Отзывы</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                {{ product.description|safe }}
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="table-responsive">
+                    {{ product.specification|safe }}
+                </div>
+            </div>
+            <div class="tab-pane show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row total_rate">
+                            <div class="col-6">
+                                <div class="box_total">
+                                    <h5>Общая оценка</h5>
+                                    <h4>{{ reviews.first.product.slug|get_overall_rate }}</h4>
+                                    <h6>({{ reviews.count }} Отзыв{{ reviews.count|pluralize:'а' }} )</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rating_list">
+                                    <h3>На основании {{ reviews.count }} отзывов</h3>
+                                    <ul class="list">
+                                        <li><a href="#">5 Звезд <i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                class="fa fa-star"></i><i
+                                                class="fa fa-star"></i><i
+                                                class="fa fa-star"></i> {{ product.slug|count_five }}</a></li>
+                                        <li><a href="#">4 Звезды <i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                class="fa fa-star"></i><i
+                                                class="fa fa-star"></i><i
+                                                class="far fa-star"></i> {{ product.slug|count_four }}</a></li>
+                                        <li><a href="#">3 Звезды <i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                class="fa fa-star"></i><i
+                                                class="far fa-star"></i><i
+                                                class="far fa-star"></i> {{ product.slug|count_three }}</a></li>
+                                        <li><a href="#">2 Звезды <i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                class="far fa-star"></i><i
+                                                class="far fa-star"></i><i
+                                                class="far fa-star"></i> {{ product.slug|count_two }}</a></li>
+                                        <li><a href="#">1 Звезда <i class="fa fa-star"></i><i class="far fa-star"></i><i
+                                                class="far fa-star"></i><i
+                                                class="far fa-star"></i><i
+                                                class="far fa-star"></i> {{ product.slug|count_one }}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review_list">
+                            {% for review in reviews %}
+                                <div class="review_item">
+                                    <div class="media">
+                                        <div class="media-body" style="display:flex;align-items: center">
+                                            <h4 style="margin-right: 1rem;">{{ review.author.first_name }} {{ review.author.last_name }}</h4>
+                                            {% for i in review.rate|get_list %}
+                                                <i class="fa fa-star"></i>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <p style="font-family: 'Poppins', sans-serif; font-weight: bold;">{{ review.comment|safe }}</p>
+                                    <span style="font-size: small;">
+                                        {{ review.created_at }}
+                                    </span>
+                                </div>
+                                <hr>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6" style="display: flex; flex-direction: column;">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}" role="alert"
+                                     style="height: fit-content">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% if form.errors %}
+                            {% for error in form.errors %}
+                                <div class="alert alert-danger" role="alert"
+                                     style="height: fit-content">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ error.field.error }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="review_box" style="display: flex; flex-direction: column;">
+                            <h4>Добавить отзыв</h4>
+                            <form class="review-form" action="{% url 'add_review' product.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="input-rating">
+                                        <p>Ваша оценка:</p>
+                                        <div class="stars">
+                                            <input type="radio" id="star5" name="rate" value="5"/><label
+                                                for="star5"></label>
+                                            <input type="radio" id="star4" name="rate" value="4"/><label
+                                                for="star4"></label>
+                                            <input type="radio" id="star3" name="rate" value="3"/><label
+                                                for="star3"></label>
+                                            <input type="radio" id="star2" name="rate" value="2"/><label
+                                                for="star2"></label>
+                                            <input type="radio" id="star1" name="rate" value="1"/><label
+                                                for="star1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Отзыв:</p>
+
+                                <div class="form-group">
+                                        <textarea class="form-control different-control w-100" name="comment"
+                                                  id="textarea" cols="30" rows="5"
+                                                  placeholder="Напишите отзыв" style="font-size: 16px;"
+                                                  maxlength="250"></textarea>
+                                </div>
+
+                                {% if user.id is not None %}
+                                    <button class="button button--active button-review">Отправить</button>
+                                {% else %}
+                                    <a href="{% url 'login' %}">Войдите</a> в что бы оставить отзыв.
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    {#    <script>#}
+    {#        let fiveStars = document.getElementById('star5')#}
+    {#    </script>#}
+
+    <!--================End Product Description Area =================-->
+    <script src="{% static 'shop/vendors/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'shop/vendors/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'shop/vendors/owl-carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'shop/vendors/nice-select/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'shop/vendors/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'shop/vendors/mail-script.js' %}"></script>
+    <script src="{% static 'shop/vendors/main.js' %}"></script>
+    <script src="{% static 'shop/js/swiper.min.js' %}"></script>
+    <script src="{% static 'shop/js/slider.js' %}"></script>
+    <script src="{% static 'shop/js/jquery.izoomify.js' %}"></script>
+    <script>
+        const allHoverImages = document.querySelectorAll('#variant_images div img');
+        const allHoverRelatedImages = document.querySelectorAll('#related_images div img');
+        const imgContainer = document.querySelector('.single-prd-item');
+        {#const old_price = document.querySelector('#old_price');#}
+        const new_price = document.querySelector('#new_price');
+        {#const sale_percent = document.querySelector('#sale_percent');#}
+        const colorContainer = document.getElementById('color-container');
+        const typeContainer = document.getElementById('type-container');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            allHoverImages[0].parentElement.classList.add('active');
+        });
+
+        allHoverImages.forEach((image) => {
+            image.addEventListener('click', () => {
+                if (image.parentElement.hasAttribute("data-price")) {
+                    imgContainer.querySelector('img').src = image.src;
+                    {#old_price.innerHTML = image.parentElement.dataset.price;#}
+                    new_price.innerHTML = image.parentElement.dataset.sale_price;
+                    {#sale_percent.innerHTML = '<i>Скидка ' + image.parentElement.dataset.sale_percent + '%</i>'#}
+                    colorContainer.innerText = image.parentElement.dataset.color;
+                    resetZoomImg();
+                    resetActiveImg();
+                    image.parentElement.classList.add('active');
+                }
+                if (image.parentElement.dataset.type !== null) {
+                    typeContainer.innerText = image.parentElement.dataset.type;
+                }
+            });
+        });
+
+        allHoverRelatedImages.forEach((image) => {
+            image.addEventListener('click', () => {
+                imgContainer.querySelector('img').src = image.src;
+                resetZoomImg();
+                resetActiveImg();
+                image.parentElement.classList.add('active');
+            });
+        });
+
+        function resetActiveImg() {
+            allHoverImages.forEach((img) => {
+                img.parentElement.classList.remove('active');
+            });
+        }
+
+        function resetZoomImg() {
+            $('.target').izoomify({
+                magnify: 2,
+                duration: 450,
+            });
+        }
+    </script>
+    <script>
+        $('.target').izoomify({
+            magnify: 2,
+            duration: 450,
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+    {{ product.title|title }} {{ product.variant }}
+{% endblock %}
+{% block content %}
+    <form action="{% url 'add_review' product.slug %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}
