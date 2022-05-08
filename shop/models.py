@@ -5,6 +5,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from ckeditor.fields import RichTextField
+from phonenumber_field.modelfields import PhoneNumberField
 
 STATUS = (
     ('True', 'True'),
@@ -18,8 +19,8 @@ class Banner(models.Model):
     status = models.CharField(max_length=20, choices=STATUS)
 
     class Meta:
-        verbose_name = '0. Баннер'
-        verbose_name_plural = '0. Баннеры'
+        verbose_name = 'Баннер'
+        verbose_name_plural = 'Баннеры'
 
     def __str__(self):
         return self.name
@@ -32,7 +33,7 @@ class Category(models.Model):
     class Meta:
         ordering = ('name',)
         verbose_name = 'Категория'
-        verbose_name_plural = '1. Категории'
+        verbose_name_plural = 'Категории'
 
     def __str__(self):
         return self.name
@@ -43,7 +44,7 @@ class Country(models.Model):
 
     class Meta:
         verbose_name = 'Страна Производства'
-        verbose_name_plural = ' 10. Страны Производства'
+        verbose_name_plural = 'Страны Производства'
 
     def __str__(self):
         return self.country
@@ -55,7 +56,7 @@ class Brand(models.Model):
 
     class Meta:
         verbose_name = 'Бренд'
-        verbose_name_plural = '2. Бренды'
+        verbose_name_plural = 'Бренды'
 
     def __str__(self):
         return self.name
@@ -69,7 +70,11 @@ class Brand(models.Model):
 
 class Service(models.Model):
     name = models.CharField(blank=True, null=True, max_length=150, verbose_name="Название")
-    services = RichTextField(blank=True, null=True, verbose_name="Сервисы")
+    services = RichTextField(blank=True, null=True, verbose_name="Услуга")
+
+    class Meta:
+        verbose_name = 'Услуга'
+        verbose_name_plural = 'Услуги'
 
     def __str__(self):
         return self.name
@@ -131,7 +136,7 @@ class Product(models.Model):
 
     class Meta:
         verbose_name = 'Дверь'
-        verbose_name_plural = '3. Двери'
+        verbose_name_plural = 'Двери'
 
     def __str__(self):
         return self.title
@@ -151,7 +156,7 @@ class DoorType(models.Model):
 
     class Meta:
         verbose_name = 'Тип двери'
-        verbose_name_plural = '5. Типы двери'
+        verbose_name_plural = 'Типы двери'
 
     def __str__(self):
         return self.type
@@ -175,7 +180,7 @@ class RelatedImages(models.Model):
 
     class Meta:
         verbose_name = 'Детальная фото'
-        verbose_name_plural = '7. Детальные фото'
+        verbose_name_plural = 'Детальные фото'
 
 
 class Color(models.Model):
@@ -193,7 +198,7 @@ class Color(models.Model):
 
     class Meta:
         verbose_name = 'Цвет'
-        verbose_name_plural = '8. Цвета'
+        verbose_name_plural = 'Цвета'
 
 
 class Sizes(models.Model):
@@ -201,7 +206,7 @@ class Sizes(models.Model):
 
     class Meta:
         verbose_name = "Размер"
-        verbose_name_plural = "9. Размеры"
+        verbose_name_plural = "Размеры"
 
     def __str__(self):
         return self.name
@@ -222,7 +227,7 @@ class Variants(models.Model):
 
     class Meta:
         verbose_name = 'Вариант'
-        verbose_name_plural = '4. Варианты'
+        verbose_name_plural = 'Варианты'
 
     def __str__(self):
         return self.title
@@ -253,3 +258,36 @@ class ProductReview(models.Model):
             return self.author.username + " " + self.product.title + " " + str(self.comment)[0:30]
         else:
             return self.author.username + " " + self.product.title + " " + str(self.comment)[0:len(str(self.comment))]
+
+
+class LikedProducts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Variants, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username + ' - ' + self.product.title
+
+
+class Question(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=40, null=False, blank=False)
+    question = models.TextField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    phone_number = PhoneNumberField(null=False, blank=False)
+    answered = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.subject
+
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, )
+    answer = RichTextField()
+
+    def __str__(self):
+        if Answer.objects.filter(question__id=self.question.id).exists():
+            data = Question.objects.get(id=self.question.id)
+            data.answered = True
+            data.save()
+        return str(self.question.subject)

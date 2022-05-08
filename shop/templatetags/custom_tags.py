@@ -101,3 +101,26 @@ def get_list(rate):
     for i in range(0, int(rate)):
         list.append(i)
     return list
+
+
+@register.filter(name="is_liked")
+def is_liked(id):
+    if LikedProducts.objects.filter(product_id=id).exists():
+        return True
+    else:
+        return False
+
+
+@register.filter(name="get_overall_price")
+def get_overall_price(id):
+    liked_products = LikedProducts.objects.filter(user__pk=id)
+    price = 0
+    for pr in liked_products:
+        price += pr.product.sale_price
+    return price
+
+
+@register.filter(name="get_answer")
+def get_answer(id):
+    if Answer.objects.filter(question__id=id).exists():
+        return Answer.objects.filter(question__id=id)

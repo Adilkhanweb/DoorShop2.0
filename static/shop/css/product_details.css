@@ -264,3 +264,53 @@ img {
     content: "\f005";
     color: #FFB656;
 }
+
+/*********************************************************************************/
+/*********************************For Modal***************************************/
+/*********************************************************************************/
+
+
+.modal-form .input-rating .stars {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.modal-form .input-rating .stars input[type="radio"] {
+    display: none;
+}
+
+.modal-form .input-rating .stars > label {
+    float: right;
+    cursor: pointer;
+    padding: 0px 3px;
+    margin: 0px;
+    -webkit-transition: 0.3s all;
+    transition: 0.3s all;
+}
+
+.modal-form .input-rating .stars > label:hover, .modal-form .input-rating .stars > label:hover ~ label {
+    -webkit-transform: scale(1.5);
+    -ms-transform: scale(1.5);
+    transform: scale(1.5);
+}
+
+.modal-form .input-rating .stars > label:before {
+    content: "\f006";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    color: #DADADA;
+    font-size: 14px;
+    -webkit-transition: 0.3s all;
+    transition: 0.3s all;
+}
+
+.modal-form .input-rating .stars > label:hover:before, .modal-form .input-rating .stars > label:hover ~ label:before {
+    content: "\f005";
+    color: #FFB656;
+}
+
+.modal-form .input-rating .stars > input:checked label:before, .modal-form .input-rating .stars > input:checked ~ label:before {
+    content: "\f005";
+    color: #FFB656;
+}

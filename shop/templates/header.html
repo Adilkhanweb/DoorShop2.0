@@ -43,13 +43,15 @@
         <div class="icons" style="display: flex; align-items: center">
             {% if user.is_authenticated %}
                 <h1 style="font-size: 20px; font-family: 'Poppins', sans-serif; font-weight: bold; margin: 0; padding: 0;">{{ user.first_name }} {{ user.last_name|first }}.</h1>
+                <a href="{% url 'liked_products' user.pk %}" class="fas fa-heart"></a>
                 <a href="{% url 'logout' %}" class="fas fa-sign-out-alt" title="Выйти"></a>
             {% else %}
-                <a href="{% url 'login' %}" id="login-btn" title="Вход / Регистрация" style="font-family: 'Poppins', sans-serif; font-weight: bold; font-size: 2rem;">Вход <i class="fas fa-sign-out-alt"></i></a>
+                <a href="{% url 'login' %}" id="login-btn" title="Вход / Регистрация"
+                   style="font-family: 'Poppins', sans-serif; font-weight: bold; font-size: 2rem;">Вход <i
+                        class="fas fa-sign-out-alt"></i></a>
             {% endif %}
             {#            <div id="search-btn" class="fas fa-search"></div>#}
-            {#            <a href="#" class="fas fa-heart"></a>#}
-            {#            <a href="#" class="fas fa-shopping-cart"></a>#}
+            <a href="{% url 'my_questions' user.id %}" class="fas fa-shopping-cart"></a>
         </div>
 
     </div>

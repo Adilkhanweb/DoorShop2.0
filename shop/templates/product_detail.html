@@ -7,6 +7,24 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        th, td {
+            text-align: left;
+            align-items: center;
+            padding-right: 1rem;
+        }
+
+        .td_star {
+            color: goldenrod;
+        }
+    </style>
     <link rel="stylesheet" href="{% static 'shop/vendors/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'shop/vendors/fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'shop/vendors/themify-icons/themify-icons.css' %}">
@@ -22,6 +40,74 @@
 
 
     {% include 'header.html' %}
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Review</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="change_form" method="post" class="modal-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-rating">
+                                <p>Ваша оценка:</p>
+                                <div class="stars">
+                                    <input type="radio" id="star5" name="rate" value="5"/><label
+                                        for="star5"></label>
+                                    <input type="radio" id="star4" name="rate" value="4"/><label
+                                        for="star4"></label>
+                                    <input type="radio" id="star3" name="rate" value="3"/><label
+                                        for="star3"></label>
+                                    <input type="radio" id="star2" name="rate" value="2"/><label
+                                        for="star2"></label>
+                                    <input type="radio" id="star1" name="rate" value="1"/><label
+                                        for="star1"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Отзыв:</label>
+                            <textarea class="form-control" id="message-text" name="comment"></textarea>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="float: right">Change</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete review</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="delete_form" method="post">
+                        <strong>Are you want to delete this item ?</strong>
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Delete!</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--================Single Product Area =================-->
     <div class="product_image_area">
         <div class="container">
@@ -44,7 +130,6 @@
                                                          style="object-fit: contain; height: 20vh;">
                                                 </div>
                                             {% endfor %}
-                                            <strong></strong>
                                         </div>
                                         {#                                    <div class="swiper-pagination"></div>#}
                                         <button class="swiper-button-prev"></button>
@@ -169,28 +254,50 @@
                             <div class="col-6">
                                 <div class="rating_list">
                                     <h3>На основании {{ reviews.count }} отзывов</h3>
-                                    <ul class="list">
-                                        <li><a href="#">5 Звезд <i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                class="fa fa-star"></i><i
-                                                class="fa fa-star"></i><i
-                                                class="fa fa-star"></i> {{ product.slug|count_five }}</a></li>
-                                        <li><a href="#">4 Звезды <i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                class="fa fa-star"></i><i
-                                                class="fa fa-star"></i><i
-                                                class="far fa-star"></i> {{ product.slug|count_four }}</a></li>
-                                        <li><a href="#">3 Звезды <i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                class="fa fa-star"></i><i
-                                                class="far fa-star"></i><i
-                                                class="far fa-star"></i> {{ product.slug|count_three }}</a></li>
-                                        <li><a href="#">2 Звезды <i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                class="far fa-star"></i><i
-                                                class="far fa-star"></i><i
-                                                class="far fa-star"></i> {{ product.slug|count_two }}</a></li>
-                                        <li><a href="#">1 Звезда <i class="fa fa-star"></i><i class="far fa-star"></i><i
-                                                class="far fa-star"></i><i
-                                                class="far fa-star"></i><i
-                                                class="far fa-star"></i> {{ product.slug|count_one }}</a></li>
-                                    </ul>
+                                    <table style="border: none;">
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row">5 Звезд</th>
+                                            <td class="td_star"><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                    class="fa fa-star"></i><i
+                                                    class="fa fa-star"></i><i
+                                                    class="fa fa-star"></i></td>
+                                            <td>{{ product.slug|count_five }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4 Звезды</th>
+                                            <td class="td_star">
+                                                <i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                    class="fa fa-star"></i><i
+                                                    class="fa fa-star"></i><i
+                                                    class="far fa-star"></i></td>
+                                            <td>{{ product.slug|count_four }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3 Звезды</th>
+                                            <td class="td_star"><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                    class="fa fa-star"></i><i
+                                                    class="far fa-star"></i><i
+                                                    class="far fa-star"></i></td>
+                                            <td>{{ product.slug|count_three }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2 Звезды</th>
+                                            <td class="td_star"><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                    class="far fa-star"></i><i
+                                                    class="far fa-star"></i><i
+                                                    class="far fa-star"></i></td>
+                                            <td>{{ product.slug|count_two }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">1 Звезды</th>
+                                            <td class="td_star">
+                                                <i class="fa fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                                            </td>
+                                            <td>{{ product.slug|count_one }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -207,7 +314,24 @@
                                     </div>
                                     <p style="font-family: 'Poppins', sans-serif; font-weight: bold;">{{ review.comment|safe }}</p>
                                     <span style="font-size: small;">
+                                    {% if review.updated_at %}
+                                        {{ review.updated_at }} <small>(updated)</small>
+                                    {% else %}
                                         {{ review.created_at }}
+                                    {% endif %}
+                                        {% if user == review.author %}
+
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#exampleModal"
+                                                    data-whatever="{{ review.rate }}" data-id="{{ review.id }}"
+                                                    data-comment="{{ review.comment }}">Edit
+    </button>
+                                            <button type="button" class="btn btn-outline-danger" data-toggle="modal"
+                                                    data-target="#deleteModal"
+                                                    data-whatever="{{ review.rate }}" data-id="{{ review.id }}"
+                                                    data-comment="{{ review.comment }}">Delete
+    </button>
+                                        {% endif %}
                                     </span>
                                 </div>
                                 <hr>
@@ -243,16 +367,16 @@
                                     <div class="input-rating">
                                         <p>Ваша оценка:</p>
                                         <div class="stars">
-                                            <input type="radio" id="star5" name="rate" value="5"/><label
-                                                for="star5"></label>
-                                            <input type="radio" id="star4" name="rate" value="4"/><label
-                                                for="star4"></label>
-                                            <input type="radio" id="star3" name="rate" value="3"/><label
-                                                for="star3"></label>
-                                            <input type="radio" id="star2" name="rate" value="2"/><label
-                                                for="star2"></label>
-                                            <input type="radio" id="star1" name="rate" value="1"/><label
-                                                for="star1"></label>
+                                            <input type="radio" id="sstar5" name="rate" value="5"/><label
+                                                for="sstar5"></label>
+                                            <input type="radio" id="sstar4" name="rate" value="4"/><label
+                                                for="sstar4"></label>
+                                            <input type="radio" id="sstar3" name="rate" value="3"/><label
+                                                for="sstar3"></label>
+                                            <input type="radio" id="sstar2" name="rate" value="2"/><label
+                                                for="sstar2"></label>
+                                            <input type="radio" id="sstar1" name="rate" value="1"/><label
+                                                for="sstar1"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -352,6 +476,32 @@
             magnify: 2,
             duration: 450,
         });
+        $('#exampleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            var id = button.data('id') // Extract info from data-* attributes
+            var comment = button.data('comment') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            {#modal.find('.modal-title').text('New message to ' + recipient)#}
+            modal.find('.modal-body .recipient-name').val(recipient)
+            modal.find('.modal-body textarea').val(comment)
+            $('#change_form').attr('action', "/change_review/" + id);
+        })
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            var id = button.data('id') // Extract info from data-* attributes
+            var comment = button.data('comment') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            {#modal.find('.modal-title').text('New message to ' + recipient)#}
+            {#modal.find('.modal-body .recipient-name').val(recipient)#}
+            {#modal.find('.modal-body textarea').val(comment)#}
+            $('#delete_form').attr('action', "/delete_review/" + id);
+        })
     </script>
 
 {% endblock %}

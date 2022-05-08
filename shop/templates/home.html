@@ -85,6 +85,51 @@
 
 
     <!-- footer section starts  -->
+    <section class="arrivals" id="arrivals">
+
+        <h1 class="heading"><span>Связаться с Нами</span></h1>
+
+        <div class="swiper arrivals-slider">
+
+            <div class="swiper-wrapper">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}" role="alert"
+                             style="height: fit-content">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.errors %}
+                    {% for error in form.errors %}
+                        <div class="alert alert-danger" role="alert"
+                             style="height: fit-content">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ error.field.error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form action="{% url 'contact_us' user.id %}" method="post" style="display: flex; align-items: center; flex-direction: column; margin: 0 auto; min-width: 700px; ">
+                    {% csrf_token %}
+                    <label for="id_subject">Заголовок: </label><input type="text" placeholder="subject" name="subject" id="id_subject" style="width: 100%;">
+                    <label for="id_product">Продукт: </label><select name="product" id="id_product" style="width: 100%;">
+                    <option value="">------------</option>
+                    {% for product in products %}
+                        <option value="{{ product.id }}">{{ product.title }}</option>
+                    {% endfor %}
+
+                </select>
+                    <label for="id_question">Ваш вопрос: </label><textarea name="question" id="id_question" cols="30" rows="10" placeholder="question" style="width: 100%;"></textarea>
+                    <label for="id_phone_number">Ваш номер: </label>
+
+                    <input id="id_phone_number" type="tel" name="phone_number">
+                    <button type="submit">Отправить</button>
+                </form>
+            </div>
+
+        </div>
+    </section>
 
     <section class="footer">
 

@@ -60,6 +60,21 @@
                                 <span class="sale_price">{{ product.sale_price|floatformat:"0"|intcomma:' ' }}</span>
                                 {#                                <span class="price">{{ product.id|get_first_price|floatformat:"0"|intcomma:' ' }}</span>#}
                             </div>
+                            <form action="{% url 'like' product.id %}" method="POST">
+                                {% if user.is_authenticated %}
+                                    {% csrf_token %}
+                                    {% if product.id|is_liked %}
+                                        <button type="submit" name="id" value="{{ product.id }}"
+                                                class="btn btn-danger btn-sm">
+                                            Unlike
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" name="id" value="{{ product.id }}"
+                                                class="btn btn-primary btn-sm">Like
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                            </form>
                         </div>
                     </a>
                 {% endfor %}

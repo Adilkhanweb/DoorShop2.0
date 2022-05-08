@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block title %}
+    Liked Products
+{% endblock %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'shop/vendors/bootstrap/bootstrap.min.css' %}">
+    {% include 'header.html' %}
+    <h1 class="heading" style="margin-top: 5rem; margin-bottom: 5rem;"><span>Total: {{ user.id|get_overall_price }} тг</span></h1>
+    {#    {% for product in liked_products %}#}
+    {#        <div style="position:relative; border: 1px solid black; margin: 2rem; display: flex; align-items: center; justify-content: space-between">#}
+    {#            <img src="{{ product.product.image.url }}" alt="" height="120px">#}
+    {#            <a href="{% url 'product_detail' product.product.product.slug %}"><h1>{{ product.product.title }}</h1></a>#}
+    {#            <h2>            {{ product.product.color }}</h2>#}
+    {#            <h2>            {{ product.product.product.brand.name }}</h2>#}
+    {#            <h2>            {{ product.product.product.brand.image_tag }}</h2>#}
+    {#            <h2>            {{ product.product.type }}</h2>#}
+    {#            <h2>            {{ product.product.sale_price }}</h2>#}
+    {#            <form action="{% url 'like' product.product.id %}" method="POST">#}
+    {#                {% if user.is_authenticated %}#}
+    {#                    {% csrf_token %}#}
+    {#                    {% if product.product.id|is_liked %}#}
+    {#                        <button type="submit" name="id" value="{{ product.product.id }}"#}
+    {#                                class="btn btn-danger btn-sm" style="background-color: red;position:absolute;#}
+    {#right: 0;#}
+    {#  top: 0;#}
+    {#  height: 100%;#}
+    {#  border-top-left-radius: 0;#}
+    {#  border-top-right-radius: 0;#}
+    {#  border-bottom-left-radius: 0;#}
+    {#  border-bottom-right-radius: 0;#}
+    {#  margin: 0;#}
+    {#  padding: 1rem;#}
+    {#">#}
+    {#                            Unlike#}
+    {#                        </button>#}
+    {#                    {% else %}#}
+    {#                        <button type="submit" name="id" value="{{ product.product.id }}"#}
+    {#                                class="btn btn-primary btn-sm">Like#}
+    {#                        </button>#}
+    {#                    {% endif %}#}
+    {#                {% endif %}#}
+    {#            </form>#}
+    {#        </div>#}
+    {#    {% endfor %}#}
+
+    <div class="table-responsive" style="margin: 0 auto; padding: 0 2rem">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Title</th>
+                <th scope="col">Color</th>
+                <th scope="col">Brand Name</th>
+                <th scope="col">Brand Logo</th>
+                <th scope="col">Door Type</th>
+                <th scope="col">Price</th>
+                <th scope="col">Delete?</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in liked_products %}
+                <tr>
+                    <td><img src="{{ product.product.image.url }}" alt="" height="120px"></td>
+                    <td><a href="{% url 'product_detail' product.product.product.slug %}">
+                        <h1>{{ product.product.title }}</h1></a>
+                    </td>
+                    <td><h2>{{ product.product.color }}</h2>
+                    </td>
+                    <td><h2>{{ product.product.product.brand.name }}</h2></td>
+
+                    <td><h2>{{ product.product.product.brand.image_tag }}</h2></td>
+                    <td><h2>{{ product.product.type }}</h2></td>
+                    <td><h2>{{ product.product.sale_price }}</h2></td>
+                    <td>
+                        <form action="{% url 'like' product.product.id %}" method="POST">
+                            {% if user.is_authenticated %}
+                                {% csrf_token %}
+                                {% if product.product.id|is_liked %}
+                                    <button type="submit" name="id" value="{{ product.product.id }}"
+                                            class="btn btn-danger btn-sm">
+                                        Unlike
+                                    </button>
+                                {% else %}
+                                    <button type="submit" name="id" value="{{ product.product.id }}"
+                                            class="btn btn-primary btn-sm">Like
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block title %}
+    My Questions
+{% endblock %}
+{% block content %}
+    <form action="{% url 'contact_us' user.id %}" method="post" style="display: flex; align-items: center; flex-direction: column; margin: 0 auto; max-width: 700px; border: 2px solid black; padding: 0 5rem">
+        {% csrf_token %}
+        <label for="id_subject">Заголовок: </label><input type="text" placeholder="subject" name="subject" id="id_subject" style="width: 100%; border: 1px solid black">
+        <label for="id_product">Продукт: </label><select name="product" id="id_product" style="width: 100%; border: 1px solid black">
+        <option value="">------------</option>
+        {% for product in products %}
+            <option value="{{ product.id }}">{{ product.title }}</option>
+        {% endfor %}
+
+    </select>
+        <label for="id_question">Ваш вопрос: </label><textarea name="question" id="id_question" cols="30" rows="10" placeholder="question" style="width: 100%; border: 1px solid black"></textarea>
+        <label for="id_phone_number">Ваш номер: </label>
+
+        <input id="id_phone_number" type="tel" name="phone_number" style="width: 100%; border: 1px solid black">
+        <button type="submit">Отправить</button>
+    </form>
+    {% for question in question_list %}
+        <div style="background-color: #0c5460; border: 1px solid green; margin: 1rem; border-radius: 1rem;">
+            <div style="padding: 1rem">
+                {% if question.product %}
+                    {{ question.product.title }}
+                    {{ question.product.image_tag }}
+                    <br>
+                {% endif %}
+                {{ question.question }}
+                <br>
+                {{ question.created_at }}
+            </div>
+            {% if question.answered %}
+                <div style="background-color: #117a8b; border-bottom-right-radius: 1rem; border-bottom-left-radius: 1rem; padding: 1rem">
+                    Отвечено:
+                    <br>
+                    {% for answer in question.id|get_answer %}
+                        {{ answer.answer|safe }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+
+{% endblock %}

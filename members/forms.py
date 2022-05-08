@@ -1,7 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import *
 from django.contrib.auth.models import User
+from shop.models import *
 from django import forms
+from phonenumber_field.formfields import PhoneNumberField
 
 
 class SignUpForm(UserCreationForm):
@@ -20,3 +22,17 @@ class SignUpForm(UserCreationForm):
         self.fields['username'].widget.attrs['class'] = 'box'
         self.fields['password1'].widget.attrs['class'] = 'box'
         self.fields['password2'].widget.attrs['class'] = 'box'
+
+
+CHOICES = Product.objects.all().values_list('title', 'id')
+
+
+class QuestionForm(forms.ModelForm):
+    subject = forms.CharField(max_length=30, )
+    question = forms.TextInput()
+    phone_number = PhoneNumberField()
+    product = forms.Select(choices=CHOICES)
+
+    class Meta:
+        model = Question
+        fields = ('subject', 'product', 'question', 'phone_number')

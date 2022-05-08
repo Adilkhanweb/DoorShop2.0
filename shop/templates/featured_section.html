@@ -26,7 +26,7 @@
                             <span class="sale_price">{{ roomDoor.id|get_first_sale_price|floatformat:"0"|intcomma:' ' }}</span>
 {#                            <span class="old_price">{{ roomDoor.id|get_first_price|floatformat:"0"|intcomma:' ' }}</span>#}
                         </div>
-                        <a href="{% url 'product_detail' roomDoor.slug %}" class="btn">Показать детали</a>
+                        <a href="{% url 'product_detail' roomDoor.slug %}" class="btn">Подробнее</a>
                     </div>
                 </div>
             {% endfor %}

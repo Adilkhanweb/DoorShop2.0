@@ -1,6 +1,9 @@
 import admin_thumbnails
 from django.contrib import admin
 from shop.models import *
+# from jet.admin import admin
+from jet import filters
+from jet.admin import CompactInline
 
 
 class BrandAdmin(admin.ModelAdmin):
@@ -14,13 +17,13 @@ class RelatedImagesAdmin(admin.ModelAdmin):
     list_filter = ['product']
 
 
-class DetailsImageInline(admin.TabularInline):
+class DetailsImageInline(CompactInline):
     model = RelatedImages
     readonly_fields = ('pk', 'image_tag')
     extra = 1
 
 
-class ProductVariantsInline(admin.TabularInline):
+class ProductVariantsInline(CompactInline):
     model = Variants
     readonly_fields = ('image_tag',)
     extra = 1
@@ -37,6 +40,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class ColorAdmin(admin.ModelAdmin):
     list_display = ['name', 'image', 'image_tag']
+    ordering = ['name']
 
 
 class SizeAdmin(admin.ModelAdmin):
@@ -53,7 +57,35 @@ class ProductReviewAdmin(admin.ModelAdmin):
     list_filter = ['product', 'author', 'rate', ]
 
 
+class LikedProductsAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'get_image']
+    list_filter = ['user', 'product']
+
+    def get_image(self, obj):
+        return obj.product.image_tag()
+
+
+class AnswerInline(CompactInline):
+    model = Answer
+    readonly_fields = ('question',)
+    extra = 1
+    show_change_link = True
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'subject', 'product', 'phone_number']
+    list_filter = ['user', 'product', 'answered']
+    inlines = [AnswerInline]
+
+
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer']
+
+
 admin.site.register(Banner)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Answer, AnswerAdmin)
+admin.site.register(LikedProducts, LikedProductsAdmin)
 admin.site.register(Country)
 admin.site.register(Category)
 admin.site.register(Service)
